@@ -2,6 +2,14 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -32,8 +40,23 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTimes(String inputName, String outputName) throws IOException, ParseException {
+        List<Date> dateList = new ArrayList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                Date date = formatter.parse(line);
+                dateList.add(date);
+            }
+        }
+        Collections.sort(dateList);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+        for (Date element : dateList) {
+            writer.write(formatter.format(element));
+            writer.newLine();
+        }
+        writer.close();
     }
 
     /**
@@ -96,8 +119,58 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        List<Double> tempList = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                Double temp = Double.parseDouble(line);
+                if (temp >= -273 && temp <= 500) {
+                 tempList.add(temp);
+                }
+            }
+        }
+        quickSort(tempList);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+        for (Double element : tempList) {
+            writer.write(Double.toString(element));
+            writer.newLine();
+        }
+        writer.close();
+    }
+    static final Random random = new Random(Calendar.getInstance().getTimeInMillis());
+
+    private static int partition(List<Double> elements, int min, int max) {
+        double x = elements.get(min + random.nextInt(max - min + 1));
+        int left = min, right = max;
+        while (left <= right) {
+            while (elements.get(left) < x) {
+                left++;
+            }
+            while (elements.get(right) > x) {
+                right--;
+            }
+            if (left <= right) {
+                Double temp = elements.get(left);
+                elements.set(left, elements.get(right));
+                elements.set(right, temp);
+                left++;
+                right--;
+            }
+        }
+        return right;
+    }
+
+    private static void quickSort(List<Double> elements, int min, int max) {
+        if (min < max) {
+            int border = partition(elements, min, max);
+            quickSort(elements, min, border);
+            quickSort(elements, border + 1, max);
+        }
+    }
+
+    public static void quickSort(List<Double> elements) {
+        quickSort(elements, 0, elements.size() - 1);
     }
 
     /**
@@ -129,10 +202,9 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
-    }
+    static public void sortSequence(String inputName, String outputName) throws IOException, IllegalFormatException {
 
+    }
     /**
      * Соединить два отсортированных массива в один
      *

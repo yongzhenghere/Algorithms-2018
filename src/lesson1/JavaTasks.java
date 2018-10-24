@@ -219,6 +219,16 @@ public class JavaTasks {
      * Результат: second = [1 3 4 9 9 13 15 20 23 28]
      */
     static <T extends Comparable<T>> void mergeArrays(T[] first, T[] second) {
-        throw new NotImplementedError();
+        List<T> list = new ArrayList<>();
+        System.arraycopy(first, 0, second, 0, first.length);
+        for (int i = 0; i < second.length; i++) {
+            if (second[i] != null) {
+                list.add(second[i]);
+            }
+        }
+        for (int i = 0; i < list.size() - 1; i++) {
+            second[i] = list.get(i);
+        }
+        Arrays.sort(second);
     }
 }

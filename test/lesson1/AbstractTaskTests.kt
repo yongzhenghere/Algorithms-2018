@@ -2,6 +2,7 @@ package lesson1
 
 import java.io.BufferedWriter
 import java.io.File
+import java.text.ParseException
 import java.util.*
 import kotlin.math.abs
 
@@ -38,6 +39,25 @@ abstract class AbstractTaskTests : AbstractFileTests() {
             assertFileContent("temp.txt", File("input/time_out3.txt").readLines().joinToString(separator = "\n"))
         } finally {
             File("temp.txt").delete()
+        }
+        try {
+            sortTimes("input/time_in4.txt", "temp.txt")
+        } catch (e: ParseException) {
+        }
+        try {
+            sortTimes("input/time_in5.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                     00:00:00
+                     00:00:00
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTimes("input/time_in6.txt", "temp.txt")
+        } catch (e: ParseException) {
         }
     }
 

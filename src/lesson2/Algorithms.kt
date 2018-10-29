@@ -76,8 +76,14 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  * Х   Х
  * Х х Х
  */
+  // Трудоемкость T = O(n)
+  // Ресурсоемкость R = O(n)
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
-    TODO()
+    var result = 0
+    for (i in 1..menNumber) {
+        result = (result + choiceInterval) % i
+    }
+    return result + 1
 }
 
 /**

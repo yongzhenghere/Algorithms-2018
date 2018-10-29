@@ -3,8 +3,11 @@
 package lesson1
 
 import java.io.*
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * Сортировка времён
@@ -34,6 +37,8 @@ import java.util.*
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
+ // Трудоемкость T = O(n * log(n))
+ // Ресурсоемкость R = O(n)
 fun sortTimes(inputName: String, outputName: String) {
     val dateList = ArrayList<Date>()
     val formatter = SimpleDateFormat("HH:mm:ss")
@@ -78,7 +83,7 @@ fun sortTimes(inputName: String, outputName: String) {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     fun sortAddresses(inputName: String, outputName: String) {
-        TODO()
+
     }
 
     /**
@@ -111,55 +116,13 @@ fun sortTimes(inputName: String, outputName: String) {
      * 99.5
      * 121.3
      */
+     // Трудоемкость T = O(n * log(n))
+     // Ресурсоемкость R = O(n)
     fun sortTemperatures(inputName: String, outputName: String) {
-        val tempList = ArrayList<Double>()
-        for (line in File(inputName).readLines()) {
-            val temp = java.lang.Double.parseDouble(line)
-            if (temp >= -273 && temp <= 500) {
-                tempList.add(temp)
-            }
-        }
-        quickSort(tempList)
-        val writer = BufferedWriter(FileWriter(outputName))
-        for (element in tempList) {
-            writer.write(java.lang.Double.toString(element))
-            writer.newLine()
-        }
-        writer.close()
-    }
-
-    fun partition(elements: MutableList<Double>, min: Int, max: Int): Int {
-        val x = elements[min + JavaTasks.random.nextInt(max - min + 1)]
-        var left = min
-        var right = max
-        while (left <= right) {
-            while (elements[left] < x) {
-                left++
-            }
-            while (elements[right] > x) {
-                right--
-            }
-            if (left <= right) {
-                val temp = elements[left]
-                elements[left] = elements[right]
-                elements[right] = temp
-                left++
-                right--
-            }
-        }
-        return right
-    }
-
-    fun quickSort(elements: MutableList<Double>, min: Int, max: Int) {
-        if (min < max) {
-            val border = partition(elements, min, max)
-            quickSort(elements, min, border)
-            quickSort(elements, border + 1, max)
-        }
-    }
-
-    fun quickSort(elements: MutableList<Double>) {
-        quickSort(elements, 0, elements.size - 1)
+        val input = File(inputName).readLines()
+        val buffer = input.asSequence().map { it.toDouble() }.sorted().toList()
+        val output = buffer.asSequence().map { it.toString() }.toList()
+        Files.write(Paths.get(outputName), output)
     }
 
     /**
@@ -191,8 +154,47 @@ fun sortTimes(inputName: String, outputName: String) {
      * 2
      * 2
      */
+     // Трудоемкость T = O(n)
+     // Ресурсоемкость R = O(n)
     fun sortSequence(inputName: String, outputName: String) {
-        TODO()
+        val list = ArrayList<Int>()
+        var count = 1
+        var maxCount = 1
+        for (line in File(inputName).readLines()) {
+            val num = Integer.parseInt(line)
+            list.add(num)
+        }
+        val unsortedList = ArrayList(list)
+        list.sort()
+        var pointer = list[0]
+        var maxCommon = list[0]
+        for (i in 1 until list.size) {
+            if (list[i] == pointer) {
+                count++
+            } else {
+                if (count > maxCount) {
+                    maxCommon = list[i - 1]
+                    maxCount = count
+                }
+                pointer = list[i]
+                count = 1
+            }
+        }
+        if (count > maxCount) {
+            maxCommon = list[list.size - 1]
+        }
+        val writer = File(outputName).bufferedWriter()
+        for (num in unsortedList) {
+            if (num != maxCommon) {
+                writer.write(num!!.toString())
+                writer.newLine()
+            }
+        }
+        for (i in 0 until Integer.max(count, maxCount)) {
+            writer.write(Integer.toString(maxCommon))
+            writer.newLine()
+        }
+        writer.close()
     }
 
     /**
@@ -209,7 +211,19 @@ fun sortTimes(inputName: String, outputName: String) {
      *
      * Результат: second = [1 3 4 9 9 13 15 20 23 28]
      */
+     // Трудоемкость T = O(n)
+     // Ресурсоемкость R = O(n)
     fun <T : Comparable<T>> mergeArrays(first: Array<T>, second: Array<T?>) {
-        TODO()
+        val list = ArrayList<T>()
+        System.arraycopy(first, 0, second, 0, first.size)
+        for (i in second.indices) {
+            list.add(second[i]!!)
+        }
+        for (i in 0 until list.size - 1) {
+            second[i] = list[i]
+        }
+        Arrays.sort(second)
     }
+
+
 

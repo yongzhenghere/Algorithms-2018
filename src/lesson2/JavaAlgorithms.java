@@ -3,7 +3,12 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -31,10 +36,32 @@ public class JavaAlgorithms {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) {
-        throw new NotImplementedError();
-    }
+     // Трудоемкость T = O(n)
+     // Ресурсоемкость R = O(n)
 
+    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
+        List<Integer> numList = Files.readAllLines(Paths.get(inputName)).
+                stream().map(Integer::parseInt).collect(Collectors.toList());
+        int currentMin = numList.get(0);
+        int currentMax = numList.get(1);
+        int[] currentNum = {numList.get(0), numList.get(0)};
+        int first = 0, second = 0;
+        int diff = 0;
+        for (int i = 1; i < numList.size(); i++) {
+            if (numList.get(i) < currentMin) {
+                currentMin = numList.get(i);
+                currentMax = numList.get(i);
+            } else if (numList.get(i) > currentMax) {
+                currentMax = numList.get(i);
+                if (diff < currentMax - currentMin) {
+                    diff = currentMax - currentMin;
+                    first = currentMin;
+                    second = currentMax;
+                }
+            }
+        }
+        return new Pair<>(numList.indexOf(first) + 1, numList.lastIndexOf(second) + 1);
+    }
     /**
      * Задача Иосифа Флафия.
      * Простая
@@ -81,8 +108,14 @@ public class JavaAlgorithms {
      * Х   Х
      * Х х Х
      */
+    // Трудоемкость T = O(n)
+    // Ресурсоемкость R = O(n)
     static public int josephTask(int menNumber, int choiceInterval) {
-        throw new NotImplementedError();
+        int result = 0;
+        for (int i = 1; i <= menNumber; i++ ) {
+            result = (result + choiceInterval) % i;
+        }
+        return result + 1;
     }
 
     /**
@@ -96,8 +129,28 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+    // Трудоемкость T = O(m * n)
+    // Ресурсоемкость R = O(m * n)
+    static public String longestCommonSubstring(String first, String second) {
+        int[][] array = new int[first.length()][second.length()];
+        int maxLen = 0;
+        String result = "";
+        for (int i = 0; i < first.length(); i++) {
+            for (int j = 0; j < second.length(); j++) {
+                if (first.charAt(i) == second.charAt(j)) {
+                    if (i == 0 || j == 0) {
+                        array[i][j] = 1;
+                    }else {
+                        array[i][j] = 1 + array[i-1][j-1];
+                    }
+                }
+                if (array[i][j] > maxLen) {
+                    maxLen = array[i][j];
+                    result = first.substring(i + 1 - maxLen, i + 1);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -110,8 +163,22 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
+    // Трудоемкость T = O(n * n)
+    // Ресурсоемкость R = O(n)
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        int count = 0;
+        if (limit <= 1) return 0;
+        for (int i = 2; i <= limit; i++) {
+            if (isPrime(i)) count++;
+        }
+        return count;
+    }
+
+    public static boolean isPrime(int n) {
+        for (int i = 2; i * i <= n; i++) {
+            if (n % i == 0) return false;
+        }
+        return true;
     }
 
     /**

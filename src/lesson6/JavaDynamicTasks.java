@@ -2,6 +2,9 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,10 +88,34 @@ public class JavaDynamicTasks {
      *
      * Здесь ответ 2 + 3 + 4 + 1 + 2 = 12
      */
-    public static int shortestPathOnField(String inputName) {
-        throw new NotImplementedError();
+     // Трудоемкость: T = O(n * m)
+     // Ресурсоемкость: R = O(n * m)
+    public static int shortestPathOnField(String inputName) throws IOException{
+        List<String> numList = new ArrayList<>();
+        int height = 0;
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputName))) {
+            for (String line; (line = bufferedReader.readLine()) != null; ) {
+                numList.add(line.replaceAll(" ", ""));
+                height++;
+            }
+        }
+        int width = numList.get(0).length();
+        int[][] minSum = new int[height][width];
+        minSum[0][0] = numList.get(0).charAt(0) - 48;
+        for (int i = 1; i < height; i++) {
+            minSum[i][0] = numList.get(i).charAt(0) - 48 + minSum[i - 1][0];
+        }
+        for (int i = 1; i < width; i++) {
+            minSum[0][i] = numList.get(0).charAt(i) - 48 + minSum[0][i - 1];
+        }
+        for (int i = 1; i < width; i++) {
+            for (int j = 1; j < height; j++) {
+                int minPreviousSum = Math.min( minSum[j -1][i -1], Math.min(minSum[j - 1][i], minSum[j][i - 1]));
+                minSum[j][i] = numList.get(j).charAt(i) - 48 + minPreviousSum;
+            }
+        }
+        return minSum[height - 1][width - 1];
     }
-
     // Задачу "Максимальное независимое множество вершин в графе без циклов"
     // смотрите в уроке 5
 }

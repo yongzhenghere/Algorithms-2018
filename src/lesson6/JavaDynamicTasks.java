@@ -65,7 +65,7 @@ public class JavaDynamicTasks {
             result.add(list.get(index));
             index = preIndex[index];
         }
-        Collections.sort(result);
+        Collections.reverse(result);
         return result;
     }
     /**
